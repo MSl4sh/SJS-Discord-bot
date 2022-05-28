@@ -13,6 +13,18 @@ Client.on("guildMemberAdd", member => {
 
 });
 
+function permission(message) {
+    return message.member.roles.cache.some(role => role.name === 'Administrateur') ||
+        message.member.roles.cache.some(role => role.name === 'Modérateurs') ||
+        message.member.roles.cache.some(role => role.name === 'Supers Modérateurs (sous-admin)') ||
+        message.member.roles.cache.some(role => role.name === 'Modérateurs en test')
+
+}
+
+function supression(message) {
+    message.delete()
+
+}
 
 
 const prefix = "!"
@@ -48,12 +60,7 @@ Client.on('messageCreate', message => {
 
     else if (message.content === prefix + "help") {
 
-        if (
-            message.member.roles.cache.some(role => role.name === 'Administrateur') ||
-            message.member.roles.cache.some(role => role.name === 'Modérateurs') ||
-            message.member.roles.cache.some(role => role.name === 'Supers Modérateurs (sous-admin)') ||
-            message.member.roles.cache.some(role => role.name === 'Modérateurs en test')
-        ) {
+        if (permission(message)) {
             const embed = new Discord.MessageEmbed()
 
                 .setColor('#03c0ff')
@@ -76,19 +83,28 @@ Client.on('messageCreate', message => {
 
         if (!message.member.roles.cache.some(role => role.name === 'Membre')) {
             message.reply("Règles validées ! \nTu as reçu le rôle Membre, tu peux maintenant accèder aux salons.")
+                .then(msg => {
+                    msg.delete({ timeout: 6000 })
+                })
 
             message.member.roles.add("777193714077794335");
+
+
 
 
         }
         else {
             message.reply("Tu as déjà validé les règles !")
+                .then(msg => {
+                    setTimeout(() => supression(msg), 6000)
+                })
 
 
 
 
         }
-        setTimeout(() => message.channel.bulkDelete(2), 6000)
+        setTimeout(() => supression(message), 6000)
+
 
 
     }
@@ -96,12 +112,7 @@ Client.on('messageCreate', message => {
     else if (message.content.startsWith(`${prefix}kick`)) {
 
 
-        if (
-            message.member.roles.cache.some(role => role.name === 'Administrateur') ||
-            message.member.roles.cache.some(role => role.name === 'Modérateurs') ||
-            message.member.roles.cache.some(role => role.name === 'Supers Modérateurs (sous-admin)') ||
-            message.member.roles.cache.some(role => role.name === 'Modérateurs en test')
-        ) {
+        if (permission(message)) {
 
             var raison = message.content.split(":")
 
@@ -127,20 +138,18 @@ Client.on('messageCreate', message => {
 
         else {
             message.reply("Vous ne pouvez pas executer cette commande !")
+            .then(msg => {
+                setTimeout(() => supression(msg), 6000)
+            })
         }
-        setTimeout(() => message.channel.bulkDelete(2), 3000)
+        setTimeout(() => supression(message), 6000)
     }
 
     else if (message.content.startsWith(`${prefix}ban`)) {
         var raison = message.content.split(":")
 
 
-        if (
-            message.member.roles.cache.some(role => role.name === 'Administrateur') ||
-            message.member.roles.cache.some(role => role.name === 'Modérateurs') ||
-            message.member.roles.cache.some(role => role.name === 'Supers Modérateurs (sous-admin)') ||
-            message.member.roles.cache.some(role => role.name === 'Modérateurs en test')
-        ) {
+        if (permission(message)) {
 
             var member = message.mentions.members.first();
             member.ban()
@@ -162,8 +171,11 @@ Client.on('messageCreate', message => {
 
         else {
             message.reply("Vous ne pouvez pas executer cette commande !")
+            .then(msg => {
+                setTimeout(() => supression(msg), 6000)
+            })
         }
-        setTimeout(() => message.channel.bulkDelete(2), 3000)
+        setTimeout(() => supression(message), 6000)
     }
 
 
@@ -183,4 +195,4 @@ Client.on('ready', () => {
     console.log("SJS est fonctionnel")
 });
 
-Client.login("Login token")
+Client.login("LOGIN TOKEN")

@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const { fstat } = require("fs");
 const Client = new Discord.Client({
     intents: [
         Discord.Intents.FLAGS.GUILDS,
@@ -70,8 +71,8 @@ Client.on('messageCreate', message => {
                 .addField(prefix + "help", "Affiche la liste des commandes.")
                 .addField(prefix + "ping", 'SJS vous répondra "Pong !".')
                 .addField(`${prefix}salut ou ${prefix}bonjour`, "SJS vous saluera en retour.")
-                .addField(prefix + "kick + user: raison", "Kick la personne ciblée du server.")
-                .addField(prefix + "ban + user: raison", "Banni la personne ciblée du server.")
+                .addField(prefix + "kick + user: raison", "Kick la personne ciblée du server.\nExemple: !kick @user : raison")
+                .addField(prefix + "ban + user: raison", "Banni la personne ciblée du server.\nExemple : !ban @user : raison")
                 .addField(prefix + "rules.accept", 'Permet aux nouveaux venus de valider les règles et leur attribue le rôle "membre". ');
 
 
@@ -110,15 +111,24 @@ Client.on('messageCreate', message => {
     }
 
     else if (message.content.startsWith(`${prefix}kick`)) {
+        
 
+        var member = message.mentions.members.first();
+        var raison = message.content.split(":")
 
         if (permission(message)) {
 
-            var raison = message.content.split(":")
+            if (!message.mentions.members.first()) return message.reply("vous n'avez pas mentionné d'utilisateur à kick!") .then(msg => {
+                setTimeout(() => supression(msg), 5000)
+            })
 
-            member.kick()
-            var member = message.mentions.members.first();
-            message.channel.send(`${member.displayName} a été kick!\nDu balai ! :broom:`);
+
+            member.kick();
+
+            message.channel.send(`${member.displayName} a été kick!\nDu balai ! :broom:`)
+                .then(msg => {
+                    setTimeout(() => supression(msg), 6000)
+                })
             const modlog = new Discord.MessageEmbed()
 
                 .setColor('#03c0ff')
@@ -138,20 +148,26 @@ Client.on('messageCreate', message => {
 
         else {
             message.reply("Vous ne pouvez pas executer cette commande !")
-            .then(msg => {
-                setTimeout(() => supression(msg), 6000)
-            })
+                .then(msg => {
+                    setTimeout(() => supression(msg), 6000)
+                })
         }
         setTimeout(() => supression(message), 6000)
     }
 
     else if (message.content.startsWith(`${prefix}ban`)) {
+
+        
         var raison = message.content.split(":")
+        var member = message.mentions.members.first();
 
 
         if (permission(message)) {
+            if (!message.mentions.members.first()) return message.reply("vous n'avez pas mentionné d'utilisateur à banir !") .then(msg => {
+                setTimeout(() => supression(msg), 5000)
+            })
 
-            var member = message.mentions.members.first();
+
             member.ban()
             message.channel.send(`${member.displayName} a été banni!\nSalut mon pote ! :poop: :toilet:`);
             const modlog = new Discord.MessageEmbed()
@@ -171,13 +187,29 @@ Client.on('messageCreate', message => {
 
         else {
             message.reply("Vous ne pouvez pas executer cette commande !")
-            .then(msg => {
-                setTimeout(() => supression(msg), 6000)
-            })
+                .then(msg => {
+                    setTimeout(() => supression(msg), 5000)
+                })
         }
-        setTimeout(() => supression(message), 6000)
+        setTimeout(() => supression(message), 5000)
     }
 
+    else if (message.content.startsWith(`${prefix}warn`)) {
+
+        var raison = message.content.split(":")
+        var member = message.mentions.members.first();
+        if (permission(message)) {
+
+
+
+
+        }
+
+
+
+
+
+    }
 
 
 
@@ -195,4 +227,4 @@ Client.on('ready', () => {
     console.log("SJS est fonctionnel")
 });
 
-Client.login("LOGIN TOKEN")
+Client.login("OTc4MzI5NTc3MzcxODYxMDUz.GvHjK4.F7s1R3KXO0H8dQRMWrGFwmPvTjB8aDB_iA-gME")

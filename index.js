@@ -39,6 +39,12 @@ Client.on('messageCreate', message => {
 
     }
 
+    else if (message.content === prefix + "noping") {
+
+        message.reply("https://i.imgur.com/3cFx1kH.gif")
+
+    }
+
     else if (message.content === prefix + "salut" || message.content === prefix + "bonjour") {
 
         var random = Math.floor(Math.random() * 10) + 1;
@@ -67,13 +73,18 @@ Client.on('messageCreate', message => {
                 .setColor('#03c0ff')
                 .setTitle("Liste des commandes:")
                 .setDescription("Vous y trouverez la liste des commandes de SJS.")
-                .setThumbnail("https://zupimages.net/up/22/21/gwfy.jpg")
-                .addField(prefix + "help", "Affiche la liste des commandes.")
-                .addField(prefix + "ping", 'SJS vous répondra "Pong !".')
+                .setThumbnail("https://zupimages.net/up/22/21/22or.png")
+                .addField(prefix + "help", "\n\nAffiche la liste des commandes.")
                 .addField(`${prefix}salut ou ${prefix}bonjour`, "SJS vous saluera en retour.")
                 .addField(prefix + "kick + user: raison", "Kick la personne ciblée du server.\nExemple: !kick @user : raison")
                 .addField(prefix + "ban + user: raison", "Banni la personne ciblée du server.\nExemple : !ban @user : raison")
-                .addField(prefix + "rules.accept", 'Permet aux nouveaux venus de valider les règles et leur attribue le rôle "membre". ');
+                .addField(prefix + "clear + nombre", "Supprime les derniers messages postés dans le channel concerné.\nExemple : !clear 3 (supprimera les 3 derniers message du channel).")
+                .addField(prefix + "rules.accept", 'Permet aux nouveaux venus de valider les règles et leur attribue le rôle "membre". ')
+                .addField(prefix + "ping", 'SJS vous répondra "Pong !".')
+                .addField(prefix + "noping", 'SJS poste le GIF de désactivation des @ping')
+                
+                
+                
 
 
             message.channel.send({ embeds: [embed] });
@@ -111,14 +122,14 @@ Client.on('messageCreate', message => {
     }
 
     else if (message.content.startsWith(`${prefix}kick`)) {
-        
+
 
         var member = message.mentions.members.first();
         var raison = message.content.split(":")
 
         if (permission(message)) {
 
-            if (!message.mentions.members.first()) return message.reply("vous n'avez pas mentionné d'utilisateur à kick!") .then(msg => {
+            if (!message.mentions.members.first()) return message.reply("vous n'avez pas mentionné d'utilisateur à kick!").then(msg => {
                 setTimeout(() => supression(msg), 5000)
             })
 
@@ -157,13 +168,13 @@ Client.on('messageCreate', message => {
 
     else if (message.content.startsWith(`${prefix}ban`)) {
 
-        
+
         var raison = message.content.split(":")
         var member = message.mentions.members.first();
 
 
         if (permission(message)) {
-            if (!message.mentions.members.first()) return message.reply("vous n'avez pas mentionné d'utilisateur à banir !") .then(msg => {
+            if (!message.mentions.members.first()) return message.reply("vous n'avez pas mentionné d'utilisateur à banir !").then(msg => {
                 setTimeout(() => supression(msg), 5000)
             })
 
@@ -194,19 +205,46 @@ Client.on('messageCreate', message => {
         setTimeout(() => supression(message), 5000)
     }
 
-    else if (message.content.startsWith(`${prefix}warn`)) {
+    else if (message.content.startsWith(`${prefix}clear`)) {
+        
+        
 
-        var raison = message.content.split(":")
-        var member = message.mentions.members.first();
+
         if (permission(message)) {
+            var args = message.content.split(" ")
+
+                if (args[1]) {
+                    if (!isNaN(args[1]) && args[1] >= 1 && args[1] <= 99) {
+
+                        message.delete()
+                        message.channel.bulkDelete(args[1])
+                        
+                        
+                        
+
+                        message.channel.send(`${args[1]} messages ont été supprimés!`)
+                        
+
+                            
+
+
+                    }
+                    else if (isNaN(args[1])) {
+                        message.channel.send("Veuillez renseigner un nombre entre 1 et 99.")
+                    
+                        
+                    }
+
+                }
+                else {
+                    message.channel.send("Veuillez renseigner les nombre de messages à supprimer!")
+                }
+
 
 
 
 
         }
-
-
-
 
 
     }
@@ -227,4 +265,4 @@ Client.on('ready', () => {
     console.log("SJS est fonctionnel")
 });
 
-Client.login("OTc4MzI5NTc3MzcxODYxMDUz.GvHjK4.F7s1R3KXO0H8dQRMWrGFwmPvTjB8aDB_iA-gME")
+Client.login("LOGIN TOKEN")
